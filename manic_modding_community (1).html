@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MANIC Modding Community</title>
+  <link rel="icon" type="image/png" href="https://img.itch.zone/aW1nLzIzNDQ5NTQyLnBuZw==/315x250%23c/amC73J.png" />
+  <style>
+    :root {
+      --bg: #040404;
+      --bg-2: #0b0b0b;
+      --panel: rgba(10, 10, 10, 0.92);
+      --panel-2: rgba(16, 16, 16, 0.94);
+      --text: #ff2b2b;
+      --text-soft: #d95a5a;
+      --muted: #9b3d3d;
+      --line: rgba(255, 43, 43, 0.16);
+      --line-strong: rgba(255, 43, 43, 0.28);
+      --accent: #ff1010;
+      --accent-2: #b10000;
+      --good: #ff5555;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.7);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.82)),
+        url('https://img.itch.zone/aW1nLzIzNDk0OTg4LnBuZw==/original/vKcCKE.png') center center / cover fixed no-repeat,
+        linear-gradient(180deg, #020202 0%, #0a0000 100%);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      background: rgba(8, 8, 8, 0.86);
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 16px;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      color: #000;
+      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #ff4d4d;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 0.85rem;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 11px 16px;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      font-weight: 700;
+      box-shadow: 0 8px 22px rgba(255, 0, 0, 0.18);
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn.secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--line-strong);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    .hero {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 0;
+      min-height: 420px;
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .main-image {
+      min-height: 230px;
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.88)),
+        url('https://img.itch.zone/aW1nLzIzNDkzMDc2LnBuZw==/original/3w8HWx.png') center center / cover no-repeat;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .main-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.56) 100%);
+    }
+
+    .hero-content {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .eyebrow {
+      color: #ff6a6a;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 0.95;
+      max-width: 11ch;
+      color: #ff2a2a;
+      text-shadow: 0 0 18px rgba(255, 0, 0, 0.18);
+    }
+
+    .hero h2 span { color: #fff; }
+
+    .hero p.desc {
+      max-width: 64ch;
+      color: var(--text-soft);
+      line-height: 1.65;
+      font-size: 1rem;
+      margin: 14px 0 0;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .stat span {
+      color: var(--text-soft);
+      font-size: 0.88rem;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .mini-card {
+      padding: 18px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      background: rgba(255, 0, 0, 0.08);
+      border: 1px solid var(--line-strong);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      color: #ff9090;
+    }
+
+    .grid-2 {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: #fff;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+    }
+
+    .panel, .mods-panel {
+      padding: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 14px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      color: var(--text-soft);
+    }
+
+    .hint {
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .preview-wrap {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(255, 43, 43, 0.22);
+      background: rgba(255, 255, 255, 0.02);
+      margin-top: 2px;
+    }
+
+    .preview-icon {
+      width: 110px;
+      height: 110px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(255, 0, 0, 0.22), rgba(120, 0, 0, 0.2));
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .preview-icon span {
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: white;
+    }
+
+    .upload-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .tools {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tools input, .tools select {
+      flex: 1 1 180px;
+    }
+
+    .mods-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .mod-card {
+      display: grid;
+      grid-template-columns: 84px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+    }
+
+    .mod-icon {
+      width: 84px;
+      height: 84px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(255, 0, 0, 0.28), rgba(120, 0, 0, 0.18));
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+      font-size: 1.4rem;
+      flex: 0 0 auto;
+    }
+
+    .mod-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mod-info h4 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      color: #fff;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--text-soft);
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .meta .pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: #ffcbcb;
+    }
+
+    .mod-info p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.55;
+      font-size: 0.93rem;
+    }
+
+    .mod-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .small-btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border-radius: 999px;
+      padding: 9px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .small-btn.download {
+      background: rgba(255, 0, 0, 0.13);
+      border-color: rgba(255, 0, 0, 0.22);
+    }
+
+    .footer {
+      margin: 24px 0 8px;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .empty-state {
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px dashed var(--line-strong);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .hero, .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mod-card {
+        grid-template-columns: 1fr;
+        justify-items: start;
+      }
+
+      .mod-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 14px; }
+      .topbar {
+        border-radius: 24px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .top-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .hero-content { padding: 18px; }
+      .panel, .mods-panel { padding: 18px; }
+      .preview-wrap { grid-template-columns: 1fr; }
+      .preview-icon { width: 100%; height: 140px; }
+      .main-image { min-height: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">M</div>
+        <div>
+          <h1>MANIC Modding Community</h1>
+          <p>Community-made mods only. Upload, browse, and download.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn secondary" id="scrollModsBtn">Browse Mods</button>
+        <button class="btn" id="scrollUploadBtn">Upload a Mod</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="card hero-main">
+        <div class="main-image" aria-hidden="true"></div>
+        <div class="hero-content">
+          <div>
+            <p class="eyebrow">MANIC Modding Community</p>
+            <h2>UPLOAD <span>&amp;</span> SHARE</h2>
+            <p class="desc">
+              A black-and-red community page for MANIC fans to upload mod files with a title, description, icon,
+              and download link. Only community-made mods show here.
+            </p>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <strong>Mods</strong>
+              <span>community uploads</span>
+            </div>
+            <div class="stat">
+              <strong>Files</strong>
+              <span>download-ready posts</span>
+            </div>
+            <div class="stat">
+              <strong>Red</strong>
+              <span>dark horror theme</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="mini-card">
+          <h3>What this page is for</h3>
+          <p>Sharing community-made MANIC mod files, icons, and descriptions in one clean hub.</p>
+          <div class="tag-row">
+            <span class="tag">Mods</span>
+            <span class="tag">Skins</span>
+            <span class="tag">Maps</span>
+            <span class="tag">Sound Packs</span>
+          </div>
+        </div>
+        <div class="mini-card">
+          <h3>Downloads</h3>
+          <p>Each post includes a file button. In a real site, that button would download the uploaded file from your server.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Current state</h3>
+          <p>No fake sample mods are added. The page starts empty until the community posts something.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card panel" id="uploadSection">
+        <div class="section-title">
+          <div>
+            <h3>Upload a Mod</h3>
+            <p>Add a title, description, icon, and the mod file.</p>
+          </div>
+        </div>
+
+        <form id="modForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="modTitle">Title</label>
+              <input id="modTitle" type="text" placeholder="Example: Brutal Knife Pack" maxlength="60" required />
+            </div>
+
+            <div class="field">
+              <label for="modCategory">Category</label>
+              <select id="modCategory" required>
+                <option>Weapon Mod</option>
+                <option>Map</option>
+                <option>Skin</option>
+                <option>Sound Pack</option>
+                <option>Gameplay Mod</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="modDescription">Description</label>
+              <textarea id="modDescription" placeholder="Write what your mod does, what it changes, and any installation notes..." maxlength="500" required></textarea>
+            </div>
+
+            <div class="field">
+              <label for="modAuthor">Author Name</label>
+              <input id="modAuthor" type="text" placeholder="Your name" maxlength="32" required />
+            </div>
+
+            <div class="field">
+              <label for="modVersion">Version</label>
+              <input id="modVersion" type="text" placeholder="v1.0" maxlength="12" required />
+            </div>
+
+            <div class="field">
+              <label for="modIcon">Mod Icon</label>
+              <input id="modIcon" type="file" accept="image/*" />
+              <div class="hint">PNG, JPG, GIF, or WEBP recommended.</div>
+            </div>
+
+            <div class="field">
+              <label for="modFile">Mod File</label>
+              <input id="modFile" type="file" />
+              <div class="hint">This becomes the download file for the post.</div>
+            </div>
+
+            <div class="field full">
+              <label>Icon Preview</label>
+              <div class="preview-wrap">
+                <div class="preview-icon" id="iconPreviewBox">
+                  <span id="iconPreviewText">M</span>
+                  <img id="iconPreviewImg" alt="Icon preview" />
+                </div>
+                <div>
+                  <div class="hint" id="fileNameHint">No file selected yet.</div>
+                  <div class="hint" style="margin-top: 8px;">The icon preview updates when you choose an image.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="upload-actions">
+            <button class="btn" type="submit">Post Mod</button>
+            <button class="btn secondary" type="button" id="resetBtn">Clear Form</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card mods-panel" id="modsSection">
+        <div class="section-title">
+          <div>
+            <h3>Community Downloads</h3>
+            <p>Search and filter community-made uploads.</p>
+          </div>
+        </div>
+
+        <div class="tools">
+          <input id="searchInput" type="text" placeholder="Search by title, author, description, or file name" />
+          <select id="filterCategory">
+            <option value="All">All Categories</option>
+            <option value="Weapon Mod">Weapon Mod</option>
+            <option value="Map">Map</option>
+            <option value="Skin">Skin</option>
+            <option value="Sound Pack">Sound Pack</option>
+            <option value="Gameplay Mod">Gameplay Mod</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="mods-list" id="modsList"></div>
+      </div>
+    </section>
+
+    <div class="footer">
+      MANIC Modding Community • Community-made uploads only • Front-end demo page
+    </div>
+  </div>
+
+  <script>
+    const modForm = document.getElementById('modForm');
+    const modTitle = document.getElementById('modTitle');
+    const modCategory = document.getElementById('modCategory');
+    const modDescription = document.getElementById('modDescription');
+    const modAuthor = document.getElementById('modAuthor');
+    const modVersion = document.getElementById('modVersion');
+    const modIcon = document.getElementById('modIcon');
+    const modFile = document.getElementById('modFile');
+    const fileNameHint = document.getElementById('fileNameHint');
+    const iconPreviewImg = document.getElementById('iconPreviewImg');
+    const iconPreviewText = document.getElementById('iconPreviewText');
+    const modsList = document.getElementById('modsList');
+    const searchInput = document.getElementById('searchInput');
+    const filterCategory = document.getElementById('filterCategory');
+    const resetBtn = document.getElementById('resetBtn');
+    const scrollUploadBtn = document.getElementById('scrollUploadBtn');
+    const scrollModsBtn = document.getElementById('scrollModsBtn');
+
+    const STORAGE_KEY = 'manicModdingCommunityMods';
+
+    function safeLoadMods() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return [];
+        const parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.slice(0, 100);
+      } catch {
+        return [];
+      }
+    }
+
+    let mods = safeLoadMods();
+
+    function saveMods() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(mods));
+      } catch {
+        // no-op
+      }
+    }
+
+    function initialsFromTitle(title) {
+      const words = title.trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return 'M';
+      return words.slice(0, 2).map(word => word[0]).join('').toUpperCase();
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      if (Number.isNaN(date.getTime())) return dateStr;
+      return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    function renderMods() {
+      const query = searchInput.value.trim().toLowerCase();
+      const category = filterCategory.value;
+
+      const filtered = mods.filter(mod => {
+        const matchesSearch = !query || [mod.title, mod.author, mod.description, mod.fileName, mod.category]
+          .join(' ')
+          .toLowerCase()
+          .includes(query);
+        const matchesCategory = category === 'All' || mod.category === category;
+        return matchesSearch && matchesCategory;
+      });
+
+      if (filtered.length === 0) {
+        modsList.innerHTML = `
+          <div class="empty-state">
+            No community mods yet. Be the first to upload a MANIC mod with a title, description, icon, and file.
+          </div>
+        `;
+        return;
+      }
+
+      modsList.innerHTML = filtered.map(mod => {
+        const iconMarkup = mod.iconData
+          ? `<img src="${mod.iconData}" alt="${escapeHtml(mod.title)} icon">`
+          : `${escapeHtml(initialsFromTitle(mod.title))}`;
+
+        return `
+          <article class="mod-card">
+            <div class="mod-icon">${iconMarkup}</div>
+            <div class="mod-info">
+              <h4>${escapeHtml(mod.title)}</h4>
+              <div class="meta">
+                <span class="pill">${escapeHtml(mod.category)}</span>
+                <span>By ${escapeHtml(mod.author)}</span>
+                <span>${escapeHtml(mod.version)}</span>
+                <span>${escapeHtml(formatDate(mod.date))}</span>
+              </div>
+              <p>${escapeHtml(mod.description)}</p>
+              <div class="hint" style="margin-top: 8px;">File: ${escapeHtml(mod.fileName || 'No file attached')}</div>
+            </div>
+            <div class="mod-actions">
+              <button class="small-btn download" type="button" data-download="${escapeHtml(mod.id)}">Download</button>
+              <button class="small-btn" type="button" data-copy="${escapeHtml(mod.title)}">Copy Title</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function clearForm() {
+      modForm.reset();
+      iconPreviewImg.src = '';
+      iconPreviewImg.style.display = 'none';
+      iconPreviewText.style.display = 'grid';
+      fileNameHint.textContent = 'No file selected yet.';
+      iconPreviewText.textContent = 'M';
+    }
+
+    modIcon.addEventListener('change', () => {
+      const file = modIcon.files && modIcon.files[0];
+      if (!file) {
+        iconPreviewImg.src = '';
+        iconPreviewImg.style.display = 'none';
+        iconPreviewText.style.display = 'grid';
+        fileNameHint.textContent = 'No file selected yet.';
+        return;
+      }
+
+      fileNameHint.textContent = `Icon: ${file.name}`;
+      const reader = new FileReader();
+      reader.onload = () => {
+        iconPreviewImg.src = reader.result;
+        iconPreviewImg.style.display = 'block';
+        iconPreviewText.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    modFile.addEventListener('change', () => {
+      const file = modFile.files && modFile.files[0];
+      if (file) {
+        fileNameHint.textContent = `Mod file: ${file.name}`;
+      } else {
+        fileNameHint.textContent = 'No file selected yet.';
+      }
+    });
+
+    modForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const title = modTitle.value.trim();
+      const category = modCategory.value;
+      const description = modDescription.value.trim();
+      const author = modAuthor.value.trim();
+      const version = modVersion.value.trim();
+      const file = modFile.files && modFile.files[0];
+      const icon = modIcon.files && modIcon.files[0];
+
+      if (!title || !description || !author || !version) {
+        alert('Please fill in the title, description, author, and version.');
+        return;
+      }
+
+      let iconData = '';
+      if (icon) {
+        iconData = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(icon);
+        });
+      }
+
+      const newMod = {
+        id: crypto.randomUUID(),
+        title,
+        category,
+        description,
+        author,
+        version,
+        fileName: file ? file.name : 'No file attached',
+        iconData,
+        fileData: file ? await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(file);
+        }) : '',
+        date: new Date().toISOString()
+      };
+
+      mods.unshift(newMod);
+      saveMods();
+      renderMods();
+      clearForm();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    resetBtn.addEventListener('click', clearForm);
+    searchInput.addEventListener('input', renderMods);
+    filterCategory.addEventListener('change', renderMods);
+
+    modsList.addEventListener('click', async (event) => {
+      const downloadBtn = event.target.closest('[data-download]');
+      const copyBtn = event.target.closest('[data-copy]');
+
+      if (downloadBtn) {
+        const modId = downloadBtn.dataset.download;
+        const mod = mods.find(item => item.id === modId);
+        if (!mod) return;
+
+        if (mod.fileData) {
+          const link = document.createElement('a');
+          link.href = mod.fileData;
+          link.download = mod.fileName || `${mod.title}.file`;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        } else {
+          alert(`No downloadable file is attached for ${mod.title}.`);
+        }
+      }
+
+      if (copyBtn) {
+        try {
+          await navigator.clipboard.writeText(copyBtn.dataset.copy);
+          alert(`Copied: ${copyBtn.dataset.copy}`);
+        } catch {
+          alert(`Could not copy automatically. Title: ${copyBtn.dataset.copy}`);
+        }
+      }
+    });
+
+    scrollUploadBtn.addEventListener('click', () => {
+      document.getElementById('uploadSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    scrollModsBtn.addEventListener('click', () => {
+      document.getElementById('modsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    renderMods();
+  </script>
+</body>
+</html>
